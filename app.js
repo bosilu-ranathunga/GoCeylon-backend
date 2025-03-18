@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/UserRoutes');
 const locationRouter = require('./routes/LocationRoutes');
+const bookingRouter = require('./routes/BookingRoutes');
 
 const app = express();
 
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.json());
 app.use("/users", userRouter);
 app.use("/location", locationRouter);
+app.use("/booking", bookingRouter);
 
 
 
