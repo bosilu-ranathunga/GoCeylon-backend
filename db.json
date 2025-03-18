@@ -1,0 +1,26 @@
+{
+    "id": 1,
+    "name": "A",
+    "description": "A",
+    "image_url": [
+        "A",
+        "B",
+        "C"
+    ],
+    "google_map_url": "A",
+    "tags": [
+        "A",
+        "B",
+        "C"
+    ],
+    "points": [
+        {
+            "point": "Point 1",
+            "text": "Description related to Point 1"
+        },
+        {
+            "point": "Point 2",
+            "text": "Description related to Point 2"
+        }
+    ]
+}
