@@ -36,5 +36,21 @@ const createBooking = async (req, res) => {
 };
 
 
+const updateBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedData = req.body;
+
+        const updatedBooking = await booking.findByIdAndUpdate(id, updatedData, { new: true });
+        if (!updatedBooking) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+        return res.status(200).json({ message: "Booking updated successfully", booking: updatedBooking });
+    } catch (error) {
+        return res.status(500).json({ message: "Error updating booking", error: error.message });
+    }
+};
+
 exports.getAllBookings = getAllBookings;
 exports.createBooking = createBooking;
+exports.updateBooking = updateBooking;
