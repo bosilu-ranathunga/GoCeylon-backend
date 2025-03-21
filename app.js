@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/users", userRouter);
 app.use("/location", locationRouter);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve the uploaded files from 'uploads' folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));  // Serve the uploaded files from 'uploads' folder
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://admin:JbkMQtmZEYD8gTrP@cluster0.doxbw.mongodb.net/')

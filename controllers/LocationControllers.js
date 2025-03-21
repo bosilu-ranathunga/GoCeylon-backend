@@ -13,35 +13,51 @@ const getAllLocations = async (req, res) => {
     }
 };
 
+const getLocationById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const location = await Location.findById(id);
+
+        if (!location) {
+            return res.status(404).json({ message: 'Location not found' });
+        }
+
+        res.status(200).json(location);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching location' });
+    }
+};
+
 const createLocation = async (req, res) => {
     try {
         const { name, description, google_map_url } = req.body;
-        
-        // Ensure tags and points are parsed properly
-        const tags = JSON.parse(req.body.tags);
-        const points = JSON.parse(req.body.points);
+
+        // Ensure tags and points are properly parsed
+        const tags = req.body.tags ? JSON.parse(req.body.tags) : [];
+        const points = req.body.points ? JSON.parse(req.body.points) : [];
 
         // Get uploaded image URLs
-        const image_urls = req.files.map(file => `http://localhost:3000/uploads/${file.filename}`);
+        const image_urls = req.files ? req.files.map(file => `http://localhost:3000/uploads/${file.filename}`) : [];
 
         const location = new Location({
             name,
             description,
-            image_url: image_urls, // Array of images
+            image_url: image_urls, // Store image URLs
             google_map_url,
-            tags,  // Now correctly parsed
-            points // Now correctly parsed
+            tags,
+            points
         });
 
         await location.save();
 
         res.status(201).json({
-            message: 'Location created successfully',
+            message: "Location created successfully",
             location
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating location' });
+        res.status(500).json({ message: "Error creating location" });
     }
 };
 
@@ -62,29 +78,32 @@ const updateLocation = async (req, res) => {
         const locationId = req.params.id;
         const updatedData = req.body;
 
-        if (req.files) {
-            const image_urls = req.files.map(file => `http://localhost:3000/uploads/${file.filename}`);
-            updatedData.image_url = image_urls;
+        let existingImages = [];
+        if (req.body.existingImages) {
+            existingImages = JSON.parse(req.body.existingImages);
         }
 
-        if (updatedData.tags) updatedData.tags = JSON.parse(updatedData.tags);
-        if (updatedData.points) updatedData.points = JSON.parse(updatedData.points);
+        let newImages = [];
+        if (req.files && req.files.length > 0) {
+            newImages = req.files.map(file => `http://localhost:3000/uploads/${file.filename}`);
+        }
+
+        updatedData.image_url = [...existingImages, ...newImages];
 
         const updatedLocation = await Location.findByIdAndUpdate(locationId, updatedData, { new: true });
 
-        res.status(200).json({
-            message: 'Location updated successfully',
-            location: updatedLocation
-        });
+        res.status(200).json({ message: "Location updated successfully", location: updatedLocation });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error updating location' });
+        res.status(500).json({ message: "Error updating location" });
     }
 };
+
 
 module.exports = {
     getAllLocations,
     createLocation,
     deleteLocation,
-    updateLocation
+    updateLocation,
+    getLocationById
 };

@@ -7,25 +7,28 @@ const locationController = require('../controllers/LocationControllers');
 // Set up Multer storage configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Where to store the files
+        cb(null, "uploads/"); // Ensure the "uploads" folder exists
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Filename format (e.g., 1625181233.jpg)
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 
-const upload = multer({ storage: storage }); // Multer middleware
+const upload = multer({ storage });
+
+// Use multer for handling image uploads
+router.post("/", upload.array("images", 5), locationController.createLocation); //
 
 // Routes
 router.get('/', locationController.getAllLocations);
+router.get('/:id', locationController.getLocationById);
 
-// POST: Create location, with image upload (using upload.array for multiple images)
-router.post('/', upload.array('images', 5), locationController.createLocation); // Handling image uploads (up to 5 images)
+
 
 // DELETE: Delete location by ID
 router.delete('/:id', locationController.deleteLocation);
 
-// PUT: Update location by ID
-router.put('/:id', locationController.updateLocation);
+// PUT: Update location by ID, allowing image uploads
+router.put('/:id', upload.array('images', 5), locationController.updateLocation);
 
 module.exports = router;
