@@ -76,20 +76,30 @@ const deleteLocation = async (req, res) => {
 const updateLocation = async (req, res) => {
     try {
         const locationId = req.params.id;
-        const updatedData = req.body;
+
+        // Manually process the form data to extract the necessary fields
+        let updatedData = {
+            name: req.body.name,
+            description: req.body.description,
+            google_map_url: req.body.google_map_url,
+            tags: JSON.parse(req.body.tags), // Assuming tags were stringified in the frontend
+            points: JSON.parse(req.body.points), // Assuming points were stringified in the frontend
+        };
 
         let existingImages = [];
         if (req.body.existingImages) {
-            existingImages = JSON.parse(req.body.existingImages);
+            existingImages = JSON.parse(req.body.existingImages); // Parse the existing images if available
         }
 
         let newImages = [];
         if (req.files && req.files.length > 0) {
-            newImages = req.files.map(file => `http://localhost:3000/uploads/${file.filename}`);
+            newImages = req.files.map(file => `http://localhost:3000/uploads/${file.filename}`); // Handle the new image files
         }
 
+        // Combine the existing and new images
         updatedData.image_url = [...existingImages, ...newImages];
 
+        // Update the location using the new data
         const updatedLocation = await Location.findByIdAndUpdate(locationId, updatedData, { new: true });
 
         res.status(200).json({ message: "Location updated successfully", location: updatedLocation });
@@ -98,6 +108,7 @@ const updateLocation = async (req, res) => {
         res.status(500).json({ message: "Error updating location" });
     }
 };
+
 
 
 module.exports = {
