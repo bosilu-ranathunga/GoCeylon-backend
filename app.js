@@ -5,14 +5,18 @@ const mongoose = require('mongoose');
 const userRouter = require('./routes/UserRoutes');
 const locationRouter = require('./routes/LocationRoutes');
 const bookingRouter = require('./routes/BookingRoutes');
+const rfidRouter = require('./routes/RfidRoutes');
 
 const app = express();
 
 //middleware
 app.use(express.json());
+
+//routes	
 app.use("/users", userRouter);
 app.use("/location", locationRouter);
 app.use("/booking", bookingRouter);
+app.use("/rfid", rfidRouter);
 
 
 
