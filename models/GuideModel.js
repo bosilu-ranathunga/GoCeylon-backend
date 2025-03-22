@@ -12,7 +12,8 @@ const guideSchema = new Schema({
     price: { type: Number, required: true },
     location: { type: [String], required: true },
     availability: { type: Boolean, default: true },
-    contact_number: { type: String, required: true, unique: true }
+    contact_number: { type: String, required: true, unique: true },
+    
 }, { timestamps: true });
 
 // *Hash password before saving*
@@ -32,4 +33,3 @@ guideSchema.methods.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('Guide', guideSchema);
