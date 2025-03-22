@@ -5,6 +5,7 @@ const cors = require('cors');
 const locationRouter = require('./routes/LocationRoutes');
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 const path = require('path');  // For handling paths
 
 const app = express();
@@ -13,6 +14,16 @@ const app = express();
 app.use(cors());
 
 // Middleware
+=======
+const bookingRouter = require('./routes/BookingRoutes');
+const guideRouter=require('./routes/GuideRoutes')
+const cors=require('cors');
+const app = express();
+
+
+//middleware
+app.use(cors());
+>>>>>>> Stashed changes
 =======
 const bookingRouter = require('./routes/BookingRoutes');
 const guideRouter=require('./routes/GuideRoutes')
