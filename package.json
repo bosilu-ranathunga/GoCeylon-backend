@@ -20,6 +20,10 @@
   },
   "homepage": "https://github.com/bosilu-ranathunga/GoCeylon-backend#readme",
   "dependencies": {
+<<<<<<< Updated upstream
+=======
+    "bcrypt": "^5.1.1",
+>>>>>>> Stashed changes
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mongoose": "^8.12.1",
