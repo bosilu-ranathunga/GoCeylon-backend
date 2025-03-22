@@ -15,7 +15,7 @@ const guideSchema = new Schema({
     contact_number: { type: String, required: true, unique: true }
 }, { timestamps: true });
 
-// **Hash password before saving**
+// *Hash password before saving*
 guideSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next(); // Only hash if password is new/changed
     try {
@@ -27,7 +27,7 @@ guideSchema.pre('save', async function (next) {
     }
 });
 
-// **Compare entered password with hashed password**
+// *Compare entered password with hashed password*
 guideSchema.methods.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
