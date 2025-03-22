@@ -6,9 +6,12 @@ const userRouter = require('./routes/UserRoutes');
 const locationRouter = require('./routes/LocationRoutes');
 const bookingRouter = require('./routes/BookingRoutes');
 const guideRouter=require('./routes/GuideRoutes')
+const cors=require('cors');
 const app = express();
 
+
 //middleware
+app.use(cors());
 app.use(express.json());
 app.use("/users", userRouter);
 app.use("/location", locationRouter);
