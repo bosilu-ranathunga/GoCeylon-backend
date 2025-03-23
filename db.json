@@ -1,26 +1,14 @@
+gide,user,location
+
+
+//booking b_id, b_date, b_time, b_location, b_user, b_gide,price, status
 {
-    "id": 1,
-    "name": "A",
-    "description": "A",
-    "image_url": [
-        "A",
-        "B",
-        "C"
-    ],
-    "google_map_url": "A",
-    "tags": [
-        "A",
-        "B",
-        "C"
-    ],
-    "points": [
-        {
-            "point": "Point 1",
-            "text": "Description related to Point 1"
-        },
-        {
-            "point": "Point 2",
-            "text": "Description related to Point 2"
-        }
-    ]
+    "b_id": 1,
+    "b_date": "2021-09-01",
+    "b_time": "10:00",
+    "b_location": "Kandy",
+    "b_user": 1,
+    "b_gide": 1,
+    "price": 1000,
+    "status": "pending"
 }
