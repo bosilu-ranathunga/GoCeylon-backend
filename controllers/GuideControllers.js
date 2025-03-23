@@ -11,7 +11,6 @@ const getAllGuides = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
-
 exports.getAllGuides = getAllGuides;
 
 //create a new guide

@@ -6,6 +6,7 @@ const userRouter = require('./routes/UserRoutes');
 const locationRouter = require('./routes/LocationRoutes');
 const bookingRouter = require('./routes/BookingRoutes');
 const guideRouter=require('./routes/GuideRoutes')
+const businessuserRouter=require('./routes/BusinessUserRoutes')
 const app = express();
 
 //middleware
@@ -14,6 +15,7 @@ app.use("/users", userRouter);
 app.use("/location", locationRouter);
 app.use("/booking", bookingRouter);
 app.use("/guides", guideRouter);
+app.use("/businessuser", businessuserRouter );
 
 
 mongoose.connect('mongodb+srv://admin:JbkMQtmZEYD8gTrP@cluster0.doxbw.mongodb.net/').
