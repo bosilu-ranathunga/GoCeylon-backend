@@ -1,5 +1,4 @@
 const Tourist = require('../models/UserModel'); // Import the correct model
-const bcrypt = require('bcrypt'); // For password hashing
 
 // Get all users (tourists)
 const getAllUsers = async (req, res) => {
@@ -25,7 +24,6 @@ const createUser = async (req, res) => {
 
     try {
         // Hash the password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new Tourist({
             name,
@@ -65,7 +63,7 @@ const updateUser = async (req, res) => {
 
         // Hash the new password if it's updated
         if (password) {
-            user.password = await bcrypt.hash(password, 10);
+
         }
 
         const updatedUser = await user.save();
