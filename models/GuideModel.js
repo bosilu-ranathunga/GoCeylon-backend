@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 const guideSchema = new Schema({
@@ -13,16 +12,13 @@ const guideSchema = new Schema({
     location: { type: [String], required: true },
     availability: { type: Boolean, default: true },
     contact_number: { type: String, required: true, unique: true },
-    
+
 }, { timestamps: true });
 
 // *Hash password before saving*
 guideSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next(); // Only hash if password is new/changed
     try {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        next();
     } catch (error) {
         next(error);
     }
@@ -30,7 +26,7 @@ guideSchema.pre('save', async function (next) {
 
 // *Compare entered password with hashed password*
 guideSchema.methods.comparePassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
+
 };
 
 module.exports = mongoose.model('Guide', guideSchema);
