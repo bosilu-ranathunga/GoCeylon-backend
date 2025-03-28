@@ -28,5 +28,5 @@ mongoose.connect('mongodb+srv://admin:JbkMQtmZEYD8gTrP@cluster0.doxbw.mongodb.ne
         console.error('MongoDB connection error:', err);
     });
 
-// Export the serverless handler (Vercel expects this)
-module.exports.handler = serverless(app);
+// Export the serverless handler (Vercel expects this as default export)
+module.exports = serverless(app);
