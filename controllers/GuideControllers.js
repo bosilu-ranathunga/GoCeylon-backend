@@ -14,7 +14,7 @@ const getAllGuides = async (req, res) => {
 exports.getAllGuides = getAllGuides;
 
 //create a new guide
-const createGuide=async (req, res) => {
+const createGuide = async (req, res) => {
     try {
         const newGuide = new Guide(req.body);
         await newGuide.save();
@@ -23,10 +23,10 @@ const createGuide=async (req, res) => {
         res.status(400).json({ message: 'Error creating guide', error: error.message });
     }
 };
-exports.createGuide=createGuide;
+exports.createGuide = createGuide;
 
 //Update a Guide
-const updateGuide=async (req, res) => {
+const updateGuide = async (req, res) => {
     try {
         const updatedGuide = await Guide.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!updatedGuide) return res.status(404).json({ message: 'Guide not found' });
@@ -35,10 +35,10 @@ const updateGuide=async (req, res) => {
         res.status(400).json({ message: 'Error updating guide', error: error.message });
     }
 };
-exports.updateGuide=updateGuide;
+exports.updateGuide = updateGuide;
 
 //Delete a guide
-const deleteGuide=async (req, res) => {
+const deleteGuide = async (req, res) => {
     try {
         const deletedGuide = await Guide.findByIdAndDelete(req.params.id);
         if (!deletedGuide) return res.status(404).json({ message: 'Guide not found' });
@@ -47,6 +47,6 @@ const deleteGuide=async (req, res) => {
         res.status(500).json({ message: 'Error deleting guide', error: error.message });
     }
 };
-exports.deleteGuide=deleteGuide;
+exports.deleteGuide = deleteGuide;
 
 
