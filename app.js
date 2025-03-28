@@ -19,14 +19,21 @@ app.use("/location", locationRouter);
 app.use("/booking", bookingRouter);
 app.use("/guides", guideRouter);
 
-// MongoDB connection
-mongoose.connect('mongodb+srv://admin:JbkMQtmZEYD8gTrP@cluster0.doxbw.mongodb.net/')
-    .then(() => {
-        console.log("Connected to MongoDB");
-    })
-    .catch(err => {
-        console.log(err);
-    });
+// MongoDB connection outside of the handler
+const connectDb = async () => {
+    if (mongoose.connection.readyState >= 1) {
+        return;
+    }
+    try {
+        await mongoose.connect('mongodb+srv://admin:JbkMQtmZEYD8gTrP@cluster0.doxbw.mongodb.net/');
+        console.log('Connected to MongoDB');
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
+    }
+};
 
-// Export the handler for serverless function
-module.exports = serverless(app);
+// Call connectDb only once
+connectDb();
+
+// Export the serverless handler
+module.exports.handler = serverless(app);
