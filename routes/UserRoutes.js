@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userControllers');
+const UserController = require('../controllers/UserControllers'); // Ensure correct file reference
 
-router.get('/', userController.getAllUsers);
-router.post('/', userController.createUser);
+// Define CRUD routes
+router.get('/', UserController.getAllUsers);       // Get all users
+router.post('/', UserController.createUser);       // Create a new user
+router.put('/:id', UserController.updateUser);     // Update a user by ID
+router.delete('/:id', UserController.deleteUser);  // Delete a user by ID
 
 module.exports = router;
+
+
