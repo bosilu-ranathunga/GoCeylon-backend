@@ -15,7 +15,7 @@ exports.getAllBookings = async (req, res) => {
     }
 };
 
-// Create a new booking
+
 exports.createBooking = async (req, res) => {
     try {
         const { b_date, b_time, b_location, b_user, b_guide, price, status } = req.body;
