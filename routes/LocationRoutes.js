@@ -20,8 +20,10 @@ const upload = multer({ storage });
 router.post("/", upload.array("images", 5), locationController.createLocation); //
 
 // Routes
+router.get('/report', locationController.getAttractionReport);``
 router.get('/', locationController.getAllLocations);
 router.get('/:id', locationController.getLocationById);
+
 
 
 

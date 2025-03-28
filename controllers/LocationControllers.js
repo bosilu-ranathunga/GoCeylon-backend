@@ -136,6 +136,29 @@ const updateLocation = async (req, res) => {
     }
 };
 
+const getAttractionReport = async (req, res) => {
+    try {
+        console.log('Fetching total attractions...');
+        const totalAttractions = await Location.countDocuments();
+        console.log('Total Attractions:', totalAttractions);
+
+        console.log('Fetching attractions by tag...');
+        const attractionsByTag = await Location.aggregate([
+            { $unwind: "$tags" },
+            { $group: { _id: "$tags", count: { $sum: 1 } } }
+        ]);
+        console.log('Attractions by Tag:', attractionsByTag);
+
+        res.status(200).json({ totalAttractions, attractionsByTag });
+    } catch (error) {
+        console.error("Error in getAttractionReport:", error);
+        res.status(500).json({ message: "Error fetching attraction report" });
+    }
+};
+
+
+
+
 
 
 module.exports = {
@@ -143,5 +166,6 @@ module.exports = {
     createLocation,
     deleteLocation,
     updateLocation,
-    getLocationById
+    getLocationById,
+    getAttractionReport
 };
