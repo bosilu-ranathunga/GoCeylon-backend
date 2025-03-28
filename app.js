@@ -1,12 +1,12 @@
 const express = require('express');
-const serverless = require('serverless-http');  // Import serverless-http
+const serverless = require('serverless-http');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/UserRoutes');
 const locationRouter = require('./routes/LocationRoutes');
 const bookingRouter = require('./routes/BookingRoutes');
 const guideRouter = require('./routes/GuideRoutes');
-
 const cors = require('cors');
+
 const app = express();
 
 // Middleware
@@ -28,5 +28,5 @@ mongoose.connect('mongodb+srv://admin:JbkMQtmZEYD8gTrP@cluster0.doxbw.mongodb.ne
         console.log(err);
     });
 
-// Export the app as a serverless function
-module.exports.handler = serverless(app);
+// Export the handler for serverless function
+module.exports = serverless(app);
