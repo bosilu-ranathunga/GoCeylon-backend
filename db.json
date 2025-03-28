@@ -1,4 +1,4 @@
-gide,user,location
+/*guide,user,location
 
 
 //booking b_id, b_date, b_time, b_location, b_user, b_gide,price, status
@@ -11,4 +11,4 @@ gide,user,location
     "b_gide": 1,
     "price": 1000,
     "status": "pending"
-}
+}*/

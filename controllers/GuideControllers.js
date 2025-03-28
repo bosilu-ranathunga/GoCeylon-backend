@@ -1,4 +1,5 @@
 const Guide = require('../models/GuideModel');
+const bcrypt = require('bcrypt'); // For password hashing
 //Read
 const getAllGuides = async (req, res) => {
     try {
@@ -48,5 +49,3 @@ const deleteGuide=async (req, res) => {
     }
 };
 exports.deleteGuide=deleteGuide;
-
-
