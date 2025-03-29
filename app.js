@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 const userRouter = require('./routes/UserRoutes');
 const locationRouter = require('./routes/LocationRoutes');
 const bookingRouter = require('./routes/BookingRoutes');
-const guideRouter = require('./routes/GuideRoutes')
+const guideRouter = require('./routes/GuideRoutes');
+const rfidRouter = require('./routes/RfidRoutes');
+const scanerRouter = require('./routes/scanerRoutes');
 const cors = require('cors');
 const app = express();
 
@@ -17,7 +19,8 @@ app.use("/users", userRouter);
 app.use("/location", locationRouter);
 app.use("/booking", bookingRouter);
 app.use("/guides", guideRouter);
-
+app.use("/rfid", rfidRouter);
+app.use("/api/scaner", scanerRouter);
 
 mongoose.connect('mongodb+srv://admin:JbkMQtmZEYD8gTrP@cluster0.doxbw.mongodb.net/').
     then(() => {
