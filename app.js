@@ -8,6 +8,7 @@ const bookingRouter = require('./routes/BookingRoutes');
 const guideRouter = require('./routes/GuideRoutes');
 const rfidRouter = require('./routes/RfidRoutes');
 const scanerRouter = require('./routes/scanerRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 const cors = require('cors');
 const app = express();
 
@@ -21,6 +22,8 @@ app.use("/booking", bookingRouter);
 app.use("/guides", guideRouter);
 app.use("/rfid", rfidRouter);
 app.use("/api/scaner", scanerRouter);
+app.use('/api/chat', chatRoutes);
+
 
 mongoose.connect('mongodb+srv://admin:JbkMQtmZEYD8gTrP@cluster0.doxbw.mongodb.net/').
     then(() => {

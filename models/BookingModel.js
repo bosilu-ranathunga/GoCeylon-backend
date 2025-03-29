@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const bookingSchema = new Schema({
-    
     b_date: { type: String, required: true },
     b_time: { type: String, required: true },
     b_location: { type: String, required: true },
