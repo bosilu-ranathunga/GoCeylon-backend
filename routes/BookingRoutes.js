@@ -7,6 +7,6 @@ router.post('/', bookingController.createBooking);
 
 router.put('/update/:id',bookingController.updateBooking);
 router.delete('/delete/:id', bookingController.deleteBooking);
-
+router.get('/user/:userId', bookingController.getBookingsByUser);
 module.exports = router;
 
