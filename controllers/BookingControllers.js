@@ -82,3 +82,20 @@ exports.deleteBooking = async (req, res) => {
         return res.status(500).json({ message: "Error deleting booking", error: error.message });
     }
 };
+
+exports.getBookingsByUser = async (req, res) => {
+    try {
+        const { userId } = req.params;  // Fetch the userId from the URL parameter
+
+        // Find all bookings related to this user
+        const bookings = await Booking.find({ b_user: userId }).populate('b_guide', 'g_name'); // Populate guide details like name
+        
+        if (!bookings || bookings.length === 0) {
+            return res.status(404).json({ message: "No bookings found for this user" });
+        }
+
+        return res.status(200).json({ bookings });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
