@@ -82,6 +82,7 @@ exports.deleteBooking = async (req, res) => {
         return res.status(500).json({ message: "Error deleting booking", error: error.message });
     }
 };
+
 exports.getBookingsByUser = async (req, res) => {
     try {
         const { userId } = req.params;  // Fetch the userId from the URL parameter
