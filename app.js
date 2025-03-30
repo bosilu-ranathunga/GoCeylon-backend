@@ -10,6 +10,12 @@ const businessuserRouter=require('./routes/BusinessUserRoutes')
 const cors=require('cors');
 const app = express();
 
+app.use(cors({
+    origin: "http://localhost:5173", // Allow frontend URL
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization"
+}));
+
 //middleware
 app.use(express.json());
 app.use("/users", userRouter);
