@@ -99,3 +99,46 @@ exports.getBookingsByUser = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+
+const PDFDocument = require('pdfkit');
+
+// Controller function to generate and send a PDF receipt
+exports.downloadReceipt = async (req, res) => {
+    try {
+        const bookingId = req.params.bookingId;
+
+        // Fetch booking details from the database
+        const booking = await Booking.findById(bookingId).populate('b_guide', 'g_name');
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        // Create a PDF document
+        const doc = new PDFDocument();
+        
+        // Set headers for downloading PDF
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=receipt_${bookingId}.pdf`);
+
+        // Pipe the document to the response
+        doc.pipe(res);
+
+        // Add content to the PDF
+        doc.fontSize(25).text('Booking Receipt', { align: 'center' });
+        doc.moveDown();
+        doc.fontSize(16).text(`Booking ID: ${booking._id}`);
+        doc.text(`Guide Name: ${booking.b_guide.g_name}`);
+        doc.text(`Date: ${booking.b_date}`);
+        doc.text(`Duration (hours): ${booking.b_time}`);
+        doc.text(`Location: ${booking.b_location}`);
+        doc.text(`Price: $${booking.price}`);
+        doc.text(`Status: ${booking.status}`);
+
+        // Finalize the PDF and send it to the client
+        doc.end();
+    } catch (error) {
+        console.error('Error generating receipt:', error);
+        res.status(500).json({ message: 'Error generating receipt' });
+    }
+};
