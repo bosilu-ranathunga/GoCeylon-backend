@@ -1,95 +1,66 @@
-const Tourist = require('../models/UserModel'); // Import the correct model
+const Tourist = require('../models/UserModel'); // Ensure to import the correct model
 const bcrypt = require('bcrypt'); // For password hashing
 
-// Get all users (tourists)
+// Read all tourists
 const getAllUsers = async (req, res) => {
     try {
         const users = await Tourist.find();
         if (!users || users.length === 0) {
             return res.status(404).json({ message: "No users found" });
         }
-        return res.status(200).json(users);
+        return res.status(200).json({ users });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 };
+exports.getAllUsers = getAllUsers;
 
-// Create a new user (tourist)
-const createUser = async (req, res) => {
-    const { name, email, password, destination, traveling_with, accommodations, tour_guide } = req.body;
-
-    // Check if all required fields are provided
-    if (!name || !email || !password || !destination || !traveling_with || accommodations === undefined || tour_guide === undefined) {
-        return res.status(400).json({ message: "Please provide name, email, password, destination, traveling_with, accommodations, and tour_guide." });
-    }
-
+// Read a tourist by ID
+const getUserById = async (req, res) => {
     try {
-        // Hash the password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = new Tourist({
-            name,
-            email,
-            password: hashedPassword,
-            destination,
-            traveling_with,
-            accommodations,
-            tour_guide
-        });
-
-        const createdUser = await newUser.save();
-        return res.status(201).json(createdUser);
+        const user = await Tourist.findById(req.params.id);  // Fetch the user using the provided ID
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        return res.status(200).json(user);  // Return the user details
     } catch (err) {
-        return res.status(400).json({ message: err.message });
+        return res.status(500).json({ message: 'Error fetching user details', error: err.message });
     }
 };
+exports.getUserById = getUserById;
 
-// Update user (tourist) by ID
+// Create a new tourist
+const createUser = async (req, res) => {
+    try {
+        const newUser = new Tourist(req.body);
+        await newUser.save();
+        res.status(201).json(newUser);
+    } catch (error) {
+        res.status(400).json({ message: 'Error creating user', error: error.message });
+    }
+};
+exports.createUser = createUser;
+
+// Update a tourist
 const updateUser = async (req, res) => {
     try {
-        const { name, email, password, destination, traveling_with, accommodations, tour_guide } = req.body;
-
-        // Find the user by ID, including password field
-        const user = await Tourist.findById(req.params.id).select('+password');
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // Update fields if provided
-        if (name) user.name = name;
-        if (email) user.email = email;
-        if (destination) user.destination = destination;
-        if (traveling_with) user.traveling_with = traveling_with;
-        if (accommodations !== undefined) user.accommodations = accommodations;
-        if (tour_guide !== undefined) user.tour_guide = tour_guide;
-
-        // Hash the new password if it's updated
-        if (password) {
-            user.password = await bcrypt.hash(password, 10);
-        }
-
-        const updatedUser = await user.save();
-        return res.status(200).json(updatedUser);
-    } catch (err) {
-        return res.status(400).json({ message: err.message });
+        const updatedUser = await Tourist.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(400).json({ message: 'Error updating user', error: error.message });
     }
 };
+exports.updateUser = updateUser;
 
-// Delete user (tourist) by ID
+// Delete a tourist
 const deleteUser = async (req, res) => {
     try {
-        const user = await Tourist.findByIdAndDelete(req.params.id);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        return res.status(200).json({ message: "User deleted successfully" });
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
+        const deletedUser = await Tourist.findByIdAndDelete(req.params.id);
+        if (!deletedUser) return res.status(404).json({ message: 'User not found' });
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting user', error: error.message });
     }
 };
-
-// Export all controller functions
-exports.getAllUsers = getAllUsers;
-exports.createUser = createUser;
-exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;

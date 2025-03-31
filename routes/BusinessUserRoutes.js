@@ -8,4 +8,5 @@ router.post('/create', BusinessUserController.createBusinessUser);
 router.put('/update/:id', BusinessUserController.updateBusinessUser);
 router.delete('/delete/:id', BusinessUserController.deleteBusinessUser);
 
+
 module.exports = router;
