@@ -1,5 +1,23 @@
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+const path = require('path');
+const businessRoutes = require('./routes/BusinessRoutes');
+
+// Middleware for JSON body parsing
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// MongoDB Connection
+mongoose.connect('mongodb://localhost:27017/businessDB', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected successfully'))
+.catch(err => console.error('MongoDB connection error:', err));
+
+// Routes
+app.use('/api/business', businessRoutes); // Routes for business operations
 
 // Define a simple route
 app.get('/', (req, res) => {

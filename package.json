@@ -14,14 +14,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/bosilu-ranathunga/GoCeylon-backend/issues"
   },
   "homepage": "https://github.com/bosilu-ranathunga/GoCeylon-backend#readme",
   "dependencies": {
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
-    "mongoose": "^8.12.1",
+    "mongoose": "^8.13.1",
+    "multer": "^1.4.5-lts.2",
     "nodemon": "^3.1.9"
   }
 }
