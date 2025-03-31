@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const GuideController = require('../controllers/GuideControllers');
+const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/', GuideController.getAllGuides);
-router.post('',GuideController.createGuide);
-router.put('/update/:id',GuideController.updateGuide);
-router.delete('/delete/:id',GuideController.deleteGuide);
+router.get('/', authMiddleware(['admin', 'tourist', 'guide']), GuideController.getAllGuides);
+router.post('', GuideController.createGuide);
+router.put('/update/:id', authMiddleware(['admin', 'guide']), GuideController.updateGuide);
+router.delete('/delete/:id', authMiddleware(['admin', 'guide']), GuideController.deleteGuide);
 
 module.exports = router;

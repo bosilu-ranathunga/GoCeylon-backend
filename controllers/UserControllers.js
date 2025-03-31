@@ -28,7 +28,7 @@ const createUser = async (req, res) => {
         const newUser = new Tourist({
             name,
             email,
-            password: hashedPassword,
+            password,
             destination,
             traveling_with,
             accommodations,
