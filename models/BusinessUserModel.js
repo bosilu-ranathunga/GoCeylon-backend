@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt'); // For hashing passwords before storing them in the database
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 const BusinessUserSchema = new Schema({
@@ -10,12 +10,12 @@ const BusinessUserSchema = new Schema({
     email: { 
         type: String, 
         required: [true, 'Email is required'], 
-        unique: true // Ensures no duplicate emails in the database
+        unique: true,
+        match: [/.+\@.+\..+/, 'Please enter a valid email address']
     },
     password: { 
         type: String, 
-        required: [true, 'Password is required'], 
-        select: false // Prevents password from being returned in queries by default
+        select: false 
     },
     business_name: { 
         type: String, 
@@ -32,24 +32,38 @@ const BusinessUserSchema = new Schema({
     contact_number: { 
         type: String, 
         required: [true, 'Contact number is required'],
-        unique: true // Ensures no duplicate contact numbers
+        unique: true
     },
     address: { 
         type: String, 
         required: [true, 'Address is required'] 
     }
-}, { timestamps: true }); // Automatically adds createdAt and updatedAt timestamps
+}, { timestamps: true });
 
-// **Middleware to hash the password before saving the document**
+// **Middleware to hash password before saving**
 BusinessUserSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next(); // Only hash if password is new/changed
+    if (!this.isModified('password') || !this.password) return next(); 
     try {
-        const salt = await bcrypt.genSalt(10); // Generate a salt for hashing
-        this.password = await bcrypt.hash(this.password, salt); // Hash the password
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
         next();
     } catch (error) {
-        next(error); // Pass any errors to the next middleware
+        next(error);
     }
+});
+
+// **Middleware to hash password before updating**
+BusinessUserSchema.pre('findOneAndUpdate', async function (next) {
+    const update = this.getUpdate();
+    if (update.password) {
+        try {
+            const salt = await bcrypt.genSalt(10);
+            update.password = await bcrypt.hash(update.password, salt);
+        } catch (error) {
+            return next(error);
+        }
+    }
+    next();
 });
 
 module.exports = mongoose.model('BusinessUser', BusinessUserSchema);

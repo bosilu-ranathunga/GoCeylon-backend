@@ -55,4 +55,4 @@ TouristSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);  // Compare password with hashed value
 };
 
-module.exports = mongoose.model('Tourist', TouristSchema);
+module.exports = mongoose.model('tourist', TouristSchema);
