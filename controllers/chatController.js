@@ -6,8 +6,6 @@ const genAI = new GoogleGenerativeAI("AIzaSyAu7_I_t-W5KwqGIDn1DL0RxTYE9lUQjls");
 
 let chatHistory = [];
 
-
-
 exports.getCatResponse = async (req, res) => {
     try {
         const userMessage = req.body.message;
@@ -33,131 +31,47 @@ exports.getCatResponse = async (req, res) => {
     }
 };
 
-/*
 exports.getTravelGuide = async (req, res) => {
     try {
-        const { query } = req.body;
+        // Expect the QR code data to be provided in the request body.
+        //const qrData = req.body.qrData;
 
-        // Fetch relevant tourist places from MongoDB
-        const places = await Location.find({ name: { $regex: query, $options: "i" } });
+        const qrData = "This is the 1500th step of Adam's Peak (Sri Pada). You have 4000 steps left to climb. There are shops a hundred meters ahead where you can rest.";
 
-        if (!places.length) {
-            return res.json({ reply: "I couldn't find any matching places. Can you be more specific?" });
+        if (!qrData) {
+            return res.status(400).json({ error: "QR code data is missing." });
         }
 
-        // Format data for AI
-        const placeDescriptions = places.map(p => `${p.name}: ${p.description}`).join("\n");
-        
+        // Use the description from the QR code data.
+        //const placeDescription = qrData.description;
 
-        const placePontDescriptions = "this is the 1500 step of the Adam peak(sripadaya). You have 4000 steps left to climb. And there are shops a hundred meters ahead where you can relst."
-
-        const chat = ai.chats.create({
-            model: "gemini-2.0-flash",
-            history: [{ role: "user", parts: [{ text: `Tell me about these places in Sri Lanka: ${placePontDescriptions}` }] }],
-        });
-
-        const response = await chat.sendMessage({ message: query });
-
-        res.json({ reply: response.text || "I couldn't process your request, please try again." });
-    } catch (error) {
-        res.status(500).json({ error: "Something went wrong." });
-    }
-
-    try {
-        const placePointDescriptions = "This is the 1500th step of Adam's Peak (Sri Pada). You have 4000 steps left to climb. There are shops a hundred meters ahead where you can rest.";
-
-        // AI Prompt
-        const userQuery = `Tell me about this point of places: ${placePointDescriptions}`;
-
-        // Initialize the model
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        // Generate AI Response
-        const result = await model.generateContent(userQuery);
-        const responseText = result.response.text() || "I couldn't process your request, please try again.";
-
-        // AI Guidance for better responses
-        const aiGuidance = `When responding to travel-related queries, provide:
-                1️⃣ A brief historical or cultural background.
-                2️⃣ Useful tips (best time to visit, weather, precautions).
-                3️⃣ Nearby facilities (restaurants, hotels, rest stops).
-                4️⃣ Encouraging or safety advice based on location details.`;
-
-        res.json({
-            reply: responseText,
-            guidance: aiGuidance
-        });
-
-    } catch (error) {
-        console.error("Error fetching AI response:", error);
-        res.status(500).json({ error: "Something went wrong while processing your request." });
-    }
-
-};
-*/
-
-/*
-exports.getTravelGuide = async (req, res) => {
-    try {
-        const placePointDescriptions = "This is the 1500th step of Adam's Peak (Sri Pada). You have 4000 steps left to climb. There are shops a hundred meters ahead where you can rest.";
-
-        const userQuery = `Tell me about this point of places: ${placePointDescriptions}`;
-
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        const result = await model.generateContent(userQuery);
-        const responseText = result.response.text() || "I couldn't process your request, please try again.";
-
-        const aiGuidance = `When responding to travel-related queries, provide:
-            1️⃣ A brief historical or cultural background.
-            2️⃣ Useful tips (best time to visit, weather, precautions).
-            3️⃣ Nearby facilities (restaurants, hotels, rest stops).
-            4️⃣ Encouraging or safety advice based on location details.`;
-
-        res.json({
-            reply: responseText,
-            guidance: aiGuidance
-        });
-
-    } catch (error) {
-        console.error("Error fetching AI response:", error);
-        res.status(500).json({ error: "Something went wrong while processing your request." });
-    }
-};
-*/
-
-
-exports.getTravelGuide = async (req, res) => {
-    try {
         const placeDescription = "This is the 1500th step of Adam's Peak (Sri Pada). You have 4000 steps left to climb. There are shops a hundred meters ahead where you can rest.";
 
-
         if (!placeDescription) {
-            return res.status(400).json({ error: "Please provide a place description." });
+            return res.status(400).json({ error: "QR code does not contain a valid description." });
         }
 
-        const userQuery = `Tell me about this point of places: ${placeDescription}`;
+        // Build a query that instructs the AI to generate a friendly, detailed travel guide.
+        const baseQuery = `Provide a detailed travel guide for a tourist attraction with the following description: "${placeDescription}". Please include:
+        - A brief historical or cultural background.
+        - Useful tips (best time to visit, weather, precautions).
+        - Information on nearby facilities (restaurants, hotels, rest stops).
+        - Encouraging and safety advice, all in a friendly and engaging tone.`;
 
+        // Optionally, add any additional guidance to ensure a human-like output.
+        const humanGuidance = "Present the guide as if you are a knowledgeable local friend sharing insider tips.";
+        const fullQuery = `${baseQuery}\n\n${humanGuidance}`;
+
+        // Initialize the Google Gemini API model.
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const result = await model.generateContent(userQuery);
+        // Generate the travel guide based on the full query.
+        const result = await model.generateContent(fullQuery);
         const responseText = result.response.text() || "I couldn't process your request, please try again.";
 
-        const aiGuidance = `When responding to travel-related queries, provide:
-            1️⃣ A brief historical or cultural background.
-            2️⃣ Useful tips (best time to visit, weather, precautions).
-            3️⃣ Nearby facilities (restaurants, hotels, rest stops).
-            4️⃣ Encouraging or safety advice based on location details.`;
-
-        // Refine the response based on guidance.
-        const refinedQuery = `${responseText} \n\n ${aiGuidance}`;
-
-        const refinedResult = await model.generateContent(refinedQuery);
-        const refinedResponseText = refinedResult.response.text() || responseText; // Use original if refinement fails.
-
+        // Send the final guide back as JSON.
         res.json({
-            reply: refinedResponseText,
-            guidance: aiGuidance
+            guide: responseText,
         });
 
     } catch (error) {
@@ -166,3 +80,238 @@ exports.getTravelGuide = async (req, res) => {
     }
 };
 
+
+exports.chat = async (req, res) => {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const userMessage = req.body.message;
+    let history = req.body.history || [];
+
+    if (!userMessage) {
+        return res.status(400).send({ error: "Message is required" });
+    }
+
+    // Ensure the first message is always from a user
+    if (history.length > 0 && history[0].role !== "user") {
+        history = []; // Reset history if it starts with a bot message
+    }
+
+    // Format user message with instructions
+    const enhancedUserMessage = `
+    You are a professional Sri Lankan travel guide. 
+    Respond only with information related to Sri Lanka travel. If the user asks about something outside of that domain output = "Sorry I am professional tour guide. I don't know that information."
+    User: ${userMessage}
+    `;
+
+    try {
+        const chat = model.startChat({
+            history: history,
+            generationConfig: {
+                maxOutputTokens: 300, // Increased max tokens for more detailed responses.
+            },
+        });
+
+        const result = await chat.sendMessage(enhancedUserMessage);
+        const response = await result.response;
+        const text = response.text();
+
+        // Append new messages to history
+        history.push({ role: "user", parts: userMessage });
+        history.push({ role: "model", parts: text });
+
+        res.send({ response: text, history: history });
+    } catch (error) {
+        console.error("Error generating response:", error);
+        res.status(500).send({ error: "Failed to generate response" });
+    }
+};
+
+
+
+
+exports.getPointText = async (req, res) => {
+    const { attractionId, pointId } = req.params; // Assuming attractionId and pointId are passed as params
+
+    try {
+        // Find the location by attractionId
+        const location = await Location.findOne({ 'points.point': pointId, '_id': attractionId });
+
+        // If location is not found
+        if (!location) {
+            return res.status(404).json({ message: 'Location or point not found' });
+        }
+
+        // Find the point by pointId within the points array
+        const point = location.points.find(p => p.point === pointId);
+
+        // If point is not found
+        if (!point) {
+            return res.status(404).json({ message: 'Point not found' });
+        }
+
+        try {
+
+            const qrData = point.text;
+
+            // Build a query that instructs the AI to generate a friendly, detailed travel guide.
+            const baseQuery = `Provide a detailed travel guide for a tourist attraction with the following description: "${qrData}". Please include:
+            - A brief historical or cultural background.
+            - Useful tips (best time to visit, weather, precautions).
+            - Information on nearby facilities (restaurants, hotels, rest stops).
+            - Encouraging and safety advice, all in a friendly and engaging tone.`;
+
+            // Optionally, add any additional guidance to ensure a human-like output.
+            const humanGuidance = "Present the guide as if you are a knowledgeable local friend sharing insider tips.";
+            const fullQuery = `${baseQuery}\n\n${humanGuidance}`;
+
+            // Initialize the Google Gemini API model.
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+            // Generate the travel guide based on the full query.
+            const result = await model.generateContent(fullQuery);
+            const responseText = result.response.text() || "I couldn't process your request, please try again.";
+
+            // Send the final guide back as JSON.
+            res.json({
+                guide: responseText,
+            });
+
+        } catch (error) {
+            console.error("Error fetching AI response:", error);
+            res.status(500).json({ error: "Something went wrong while processing your request." });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+
+/*
+exports.chat = async (req, res) => {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const userMessage = req.body.message;
+    let history = req.body.history || [];
+    console.log("-------------------------------------------------------------------------");
+    console.log(userMessage);
+    console.log(history);
+
+    if (!userMessage) {
+        return res.status(400).send({ error: "Message is required" });
+    }
+
+    // Ensure the first message is always from a user
+    if (history.length > 0 && history[0].role !== "user") {
+        history = []; // Reset history if it starts with a bot message
+    }
+
+    // Format user message with instructions
+    const enhancedUserMessage = `
+    You are a professional Sri Lankan travel guide. 
+    Please consider the following conversation history: ${history}.
+    Respond to the user's latest message, maintaining context from the previous exchange.
+    Respond only with information related to Sri Lanka travel. If the user asks about something outside of that domain, politely say you can only provide information related to Sri Lanka and suggest consulting a general knowledge resource.
+    User: ${userMessage}
+    `;
+
+    try {
+        // Start a new chat or continue the current chat
+        const chat = model.startChat({
+            history: history, // Send the full history for context
+            generationConfig: {
+                maxOutputTokens: 300, // Max tokens to generate detailed responses
+            },
+        });
+
+        const result = await chat.sendMessage(enhancedUserMessage);
+        const response = await result.response;
+        const text = response.text();
+
+        // Append new messages to history
+        history.push({ role: "user", parts: userMessage });
+        history.push({ role: "model", parts: text });
+
+        // Return the response and updated history
+        res.send({ response: text, history: history });
+    } catch (error) {
+        console.error("Error generating response:", error);
+        res.status(500).send({ error: "Failed to generate response" });
+    }
+};*/
+
+
+/*
+exports.getPointText = async (req, res) => {
+    const { attractionId, pointId } = req.params; // Assuming attractionId and pointId are passed as params
+
+    try {
+        // Find the location by attractionId
+        const location = await Location.findOne({ 'points.point': pointId, '_id': attractionId });
+
+        // If location is not found
+        if (!location) {
+            return res.status(404).json({ message: 'Location or point not found' });
+        }
+
+        // Find the point by pointId within the points array
+        const point = location.points.find(p => p.point === pointId);
+
+        // If point is not found
+        if (!point) {
+            return res.status(404).json({ message: 'Point not found' });
+        }
+
+        // Return the related point text
+        //return res.status(200).json({ text: point.text });
+
+        try {
+
+            const qrData = point.text;
+            //const qrData = "This is the 1500th step of Adam's Peak (Sri Pada). You have 4000 steps left to climb. There are shops a hundred meters ahead where you can rest.";
+
+            // Use the description from the QR code data.
+            //const placeDescription = qrData.description;
+
+            const placeDescription = "This is the 1500th step of Adam's Peak (Sri Pada). You have 4000 steps left to climb. There are shops a hundred meters ahead where you can rest.";
+
+            if (!placeDescription) {
+                return res.status(400).json({ error: "QR code does not contain a valid description." });
+            }
+
+            // Build a query that instructs the AI to generate a friendly, detailed travel guide.
+            const baseQuery = `Provide a detailed travel guide for a tourist attraction with the following description: "${qrData}". Please include:
+            - A brief historical or cultural background.
+            - Useful tips (best time to visit, weather, precautions).
+            - Information on nearby facilities (restaurants, hotels, rest stops).
+            - Encouraging and safety advice, all in a friendly and engaging tone.`;
+
+            // Optionally, add any additional guidance to ensure a human-like output.
+            const humanGuidance = "Present the guide as if you are a knowledgeable local friend sharing insider tips.";
+            const fullQuery = `${baseQuery}\n\n${humanGuidance}`;
+
+            // Initialize the Google Gemini API model.
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+            // Generate the travel guide based on the full query.
+            const result = await model.generateContent(fullQuery);
+            const responseText = result.response.text() || "I couldn't process your request, please try again.";
+
+            // Send the final guide back as JSON.
+            res.json({
+                guide: responseText,
+            });
+
+        } catch (error) {
+            console.error("Error fetching AI response:", error);
+            res.status(500).json({ error: "Something went wrong while processing your request." });
+        }
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+};*/

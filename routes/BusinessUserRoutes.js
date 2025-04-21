@@ -4,8 +4,9 @@ const BusinessUserController = require('../controllers/BusinessUserControllers')
 
 
 router.get('/', BusinessUserController.getAllBusinessUsers);
-router.post('/create', BusinessUserController.createBusinessUser);
+router.post('/', BusinessUserController.createBusinessUser);
 router.put('/update/:id', BusinessUserController.updateBusinessUser);
 router.delete('/delete/:id', BusinessUserController.deleteBusinessUser);
+router.get('/:id', BusinessUserController.getBusinessUserById);
 
 module.exports = router;

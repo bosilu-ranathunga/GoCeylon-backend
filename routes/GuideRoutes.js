@@ -7,5 +7,6 @@ router.get('/', authMiddleware(['admin', 'tourist', 'guide']), GuideController.g
 router.post('', GuideController.createGuide);
 router.put('/update/:id', authMiddleware(['admin', 'guide']), GuideController.updateGuide);
 router.delete('/delete/:id', authMiddleware(['admin', 'guide']), GuideController.deleteGuide);
+router.get('/location/:id', GuideController.getGuidesByLocation);
 
 module.exports = router;

@@ -3,7 +3,6 @@ const router = express.Router();
 const multer = require('multer'); // Multer for file uploads
 const path = require('path');
 const locationController = require('../controllers/LocationControllers');
-const authMiddleware = require('../middleware/authMiddleware');
 
 // Set up Multer storage configuration
 const storage = multer.diskStorage({
@@ -18,16 +17,20 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Use multer for handling image uploads
-router.post("/", authMiddleware(['admin']), upload.array("images", 5), locationController.createLocation); //
+router.post("/", upload.array("images", 5), locationController.createLocation); //
 
 // Routes
+router.get('/report', locationController.getAttractionReport); ``
 router.get('/', locationController.getAllLocations);
 router.get('/:id', locationController.getLocationById);
 
+
+
+
 // DELETE: Delete location by ID
-router.delete('/:id', authMiddleware(['admin']), locationController.deleteLocation);
+router.delete('/:id', locationController.deleteLocation);
 
 // PUT: Update location by ID, allowing image uploads
-router.put('/:id', authMiddleware(['admin']), upload.array('images', 5), locationController.updateLocation);
+router.put('/:id', upload.array('images', 5), locationController.updateLocation);
 
 module.exports = router;
