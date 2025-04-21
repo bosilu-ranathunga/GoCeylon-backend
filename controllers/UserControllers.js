@@ -13,6 +13,20 @@ const getAllUsers = async (req, res) => {
     }
 };
 
+// Read a tourist by ID
+const getUserById = async (req, res) => {
+    try {
+        const user = await Tourist.findById(req.params.id);  // Fetch the user using the provided ID
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        return res.status(200).json(user);  // Return the user details
+    } catch (err) {
+        return res.status(500).json({ message: 'Error fetching user details', error: err.message });
+    }
+};
+
+
 // Create a new user (tourist)
 const createUser = async (req, res) => {
     const { name, email, password, destination, traveling_with, accommodations, tour_guide } = req.body;
@@ -28,7 +42,7 @@ const createUser = async (req, res) => {
         const newUser = new Tourist({
             name,
             email,
-            password: hashedPassword,
+            password,
             destination,
             traveling_with,
             accommodations,
@@ -91,3 +105,4 @@ exports.getAllUsers = getAllUsers;
 exports.createUser = createUser;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
+exports.getUserById = getUserById;
