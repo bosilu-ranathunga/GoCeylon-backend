@@ -1,5 +1,4 @@
 const Tourist = require('../models/UserModel'); // Import the correct model
-const bcrypt = require('bcrypt'); // For password hashing
 
 // Get all users (tourists)
 const getAllUsers = async (req, res) => {
@@ -14,6 +13,20 @@ const getAllUsers = async (req, res) => {
     }
 };
 
+// Read a tourist by ID
+const getUserById = async (req, res) => {
+    try {
+        const user = await Tourist.findById(req.params.id);  // Fetch the user using the provided ID
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        return res.status(200).json(user);  // Return the user details
+    } catch (err) {
+        return res.status(500).json({ message: 'Error fetching user details', error: err.message });
+    }
+};
+
+
 // Create a new user (tourist)
 const createUser = async (req, res) => {
     const { name, email, password, destination, traveling_with, accommodations, tour_guide } = req.body;
@@ -25,12 +38,11 @@ const createUser = async (req, res) => {
 
     try {
         // Hash the password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new Tourist({
             name,
             email,
-            password: hashedPassword,
+            password,
             destination,
             traveling_with,
             accommodations,
@@ -65,7 +77,7 @@ const updateUser = async (req, res) => {
 
         // Hash the new password if it's updated
         if (password) {
-            user.password = await bcrypt.hash(password, 10);
+
         }
 
         const updatedUser = await user.save();
@@ -93,3 +105,4 @@ exports.getAllUsers = getAllUsers;
 exports.createUser = createUser;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
+exports.getUserById = getUserById;
